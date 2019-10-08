@@ -18,9 +18,8 @@ class CreateProductsTable extends Migration
             $table->string('name', 100)->unique();
             $table->text('description');
             $table->integer('price');
-            $table->integer('category_fk');
-            $table->index('name');
-            $table->foreign('category_fk')
+            $table->integer('category_id');
+            $table->foreign('category_id')
                 ->references('id')->on('categories')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
