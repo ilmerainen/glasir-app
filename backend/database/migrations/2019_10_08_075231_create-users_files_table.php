@@ -16,8 +16,12 @@ class CreateUsersFilesTable extends Migration
         Schema::create('users_files', function (Blueprint $table) {
             $table->integer('users_fk');
             $table->integer('files_fk');
-            $table->foreign('users_fk')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('files_fk')->references('id')->on('files')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('users_fk')
+                ->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('files_fk')
+                ->references('id')->on('files')
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->primary(['users_fk', 'files_fk']);
         });
     }
