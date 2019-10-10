@@ -8,7 +8,14 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+<<<<<<< HEAD
     use Notifiable;
+=======
+    public function files()
+    {
+        return $this->belongsToMany('App\File')->using('App\UserFile');
+    }
+>>>>>>> 90e8bdb... fix(backend/db): change models, factories, seeds
 
     /**
      * The attributes that are mass assignable.
