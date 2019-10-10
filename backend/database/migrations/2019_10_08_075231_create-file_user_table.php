@@ -4,33 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersFilesTable extends Migration
+class CreateFileUserTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::create('users_files', function (Blueprint $table) {
-            $table->integer('users_id');
-            $table->integer('files_id');
-            $table->foreign('users_id')
+        Schema::create('file_user', function (Blueprint $table) {
+            $table->integer('user_id');
+            $table->integer('file_id');
+            $table->foreign('user_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('files_id')
+            $table->foreign('file_id')
                 ->references('id')->on('files')
                 ->onDelete('cascade')->onUpdate('cascade');
-            $table->primary(['users_id', 'files_id']);
+            $table->primary(['user_id', 'file_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('users-files');
