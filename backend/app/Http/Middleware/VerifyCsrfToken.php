@@ -19,6 +19,10 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        // 'http://localhost:3000'
     ];
+
+    function __construct() {
+        // $this->except[] = env('REACT_APP_HOST', false);
+    }
 }

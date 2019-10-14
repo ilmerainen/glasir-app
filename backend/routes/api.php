@@ -12,7 +12,18 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// categories 
+Route::middleware(['api'])->group(function () {
+    Route::get('categories', function() {
+        $categories = App\Category::all();
+        $response = [];
+        $response['/categories'] = 'Categories';
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+        foreach($categories as ['name' => $name]) {
+            $route = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $name));
+            $route = "/categories/$route";
+            $response[$route] = $name;
+        }
+        return $response;
+    });
 });
