@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -11,29 +11,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import { Link as RouterLink } from 'react-router-dom';
 import Divider from '@material-ui/core/Divider';
 import Logo from '../../components/Logo';
-
-const routeMenuItemsMap = {};
-
-function ListItemLink(props) {
-    const { to, ...other } = props;
-    const primary = routeMenuItemsMap[to];
-
-    return (
-        <li>
-            <ListItem button component={RouterLink} to={to} {...other}>
-                <ListItemText primary={primary} />
-            </ListItem>
-        </li>
-    );
-}
-
-ListItemLink.defautlProps = {
-    open: false,
-};
-
-ListItemLink.propTypes = {
-    to: PropTypes.string.isRequired,
-};
+import { MENU_ITEMS } from '../../constants/constants';
+import ListItemLink from '../../components/ListItemLink';
 
 const useStyles = makeStyles(theme => ({
     root: {},
@@ -67,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Menu({ routeItemMap }) {
+function Menu({ routeCategoryItemMap }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const ExpandIcon = open ? <ExpandLess /> : <ExpandMore />;
@@ -80,7 +59,10 @@ export default function Menu({ routeItemMap }) {
         setOpen(prevOpen => !prevOpen);
     };
 
-    Object.assign(routeMenuItemsMap, routeItemMap);
+    const routeMenuItemsMap = {
+        ...MENU_ITEMS,
+        ...routeCategoryItemMap,
+    };
 
     return (
         <nav className={classes.lists} aria-label="navbar">
@@ -106,29 +88,35 @@ export default function Menu({ routeItemMap }) {
                 </ListItem>
                 <Collapse component="li" in={open} timeout="auto" unmountOnExit>
                     <List disablePadding>
-                        {Object.keys(routeItemMap)
-                            .filter(key => {
-                                const regex = /^\/categories\//;
-                                return regex.test(key);
-                            })
-                            .map(name => {
-                                return (
-                                    <ListItemLink
-                                        key={name}
-                                        to={`${name}`}
-                                        className={classes.nested}
-                                    />
-                                );
-                            })}
+                        {Object.keys(routeCategoryItemMap).map(name => {
+                            return (
+                                <ListItemLink
+                                    className={classes.nested}
+                                    key={name}
+                                    to={`${name}`}
+                                    routeItemMap={routeMenuItemsMap}
+                                />
+                            );
+                        })}
                     </List>
                 </Collapse>
-                <ListItemLink to="/blog" onClick={handleCollapse} />
-                <ListItemLink to="/contacts" onClick={handleCollapse} />
+                <ListItemLink
+                    to="/blog"
+                    onClick={handleCollapse}
+                    routeItemMap={routeMenuItemsMap}
+                />
+                <ListItemLink
+                    to="/contacts"
+                    onClick={handleCollapse}
+                    routeItemMap={routeMenuItemsMap}
+                />
             </List>
         </nav>
     );
 }
 
 Menu.propTypes = {
-    routeItemMap: PropTypes.object.isRequired,
+    routeCategoryItemMap: PropTypes.object.isRequired,
 };
+
+export default memo(Menu);

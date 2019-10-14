@@ -26,6 +26,9 @@ function App() {
                     <Route path="/categories/computer_science">
                         <Layout />
                     </Route>
+                    <Route path="/categories/databases_big_data">
+                        <Layout />
+                    </Route>
                     <Route path="/categories/graphics_design">
                         <Layout />
                     </Route>
@@ -39,6 +42,9 @@ function App() {
                         <Layout />
                     </Route>
                     <Route path="/categories/operating_systems">
+                        <Layout />
+                    </Route>
+                    <Route path="/categories/programming">
                         <Layout />
                     </Route>
                     <Route path="/categories/programming_languages">

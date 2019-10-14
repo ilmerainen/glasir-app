@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function SearchAppBar() {
+function SearchAppBar() {
     const classes = useStyles();
 
     return (
@@ -138,3 +138,5 @@ export default function SearchAppBar() {
         </>
     );
 }
+
+export default memo(SearchAppBar);

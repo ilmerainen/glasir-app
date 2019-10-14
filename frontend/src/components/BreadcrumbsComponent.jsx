@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -7,7 +7,6 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -16,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function BreadcrumbsComponent({ mapObj, maxItems = 2 }) {
+function BreadcrumbsComponent({ mapObj, maxItems = 2 }) {
     const classes = useStyles();
     const location = useLocation();
 
@@ -27,7 +26,6 @@ export default function BreadcrumbsComponent({ mapObj, maxItems = 2 }) {
                 maxItems={maxItems}
                 aria-label="breadcrumb"
             >
-                {console.log(location.pathname)}
                 {location.pathname
                     .split('/')
                     .reduce((prev, urlPart, i, arr) => {
@@ -50,7 +48,6 @@ export default function BreadcrumbsComponent({ mapObj, maxItems = 2 }) {
                         return [...prev, { name, urlPart: formatedUrlPart }];
                     }, [])
                     .map(({ name, urlPart }, i, arr) => {
-                        console.log(name, urlPart);
                         if (i === arr.length - 1) {
                             return (
                                 <Typography key={urlPart} color="textPrimary">
@@ -81,3 +78,5 @@ BreadcrumbsComponent.propTypes = {
     mapObj: PropTypes.object.isRequired,
     maxItems: PropTypes.number,
 };
+
+export default memo(BreadcrumbsComponent);

@@ -17,7 +17,7 @@ import { CATEGORIES_ROUTE, MENU_ITEMS } from '../../constants/constants';
 import useDataApi from '../../utils/hooks/useDataApi';
 import '../../assets/css/index.css';
 import Breadcrumbs from '../../components/BreadcrumbsComponent';
-import AppBar from '../../components/AppBar';
+import SearchAppBar from '../../components/SearchAppBar';
 
 const customizedTheme = createMuiTheme({
     palette: {
@@ -25,10 +25,6 @@ const customizedTheme = createMuiTheme({
         secondary: red,
     },
 });
-
-const routeMenuItemMap = {
-    ...MENU_ITEMS,
-};
 
 const useStyles = makeStyles(theme => ({
     progress: {
@@ -51,15 +47,33 @@ const useStyles = makeStyles(theme => ({
     breadcrumbs: {},
 }));
 
-function App() {
+function Layout() {
     const classes = useStyles();
     const [data, menuIsLoading, menuErrorMsg] = useDataApi({
         url: `${CATEGORIES_ROUTE}`,
         initData: null,
     });
+    let routeCategoryItemMap;
+    let routeMenuItemMap = {
+        ...MENU_ITEMS,
+    };
 
     if (data) {
-        Object.assign(routeMenuItemMap, data);
+        routeCategoryItemMap = data.reduce((prev, { name }) => {
+            const currentObj = { ...prev };
+            let formated = name
+                .replace(/[^a-zA-Z\d]+(?=\w)/g, '_')
+                .toLowerCase();
+            formated = `/${formated}`;
+            const route = `/categories${formated}`;
+            currentObj[route] = name;
+            return currentObj;
+        }, {});
+
+        routeMenuItemMap = {
+            ...routeMenuItemMap,
+            ...routeCategoryItemMap,
+        };
     }
 
     return (
@@ -85,7 +99,7 @@ function App() {
                         className={classes.error}
                     >
                         <Typography variant="h2" color="error">
-                            Error..
+                            Error...
                         </Typography>
                         <Typography variant="h4">{menuErrorMsg}</Typography>
                     </Grid>
@@ -94,11 +108,13 @@ function App() {
                     <>
                         <Grid container direction="row">
                             <Grid item className={classes.menu}>
-                                <Menu routeItemMap={routeMenuItemMap} />
+                                <Menu
+                                    routeCategoryItemMap={routeCategoryItemMap}
+                                />
                             </Grid>
                             <Grid item className={classes.content}>
                                 <Grid item>
-                                    <AppBar />
+                                    <SearchAppBar />
                                 </Grid>
                                 <Grid
                                     container
@@ -107,7 +123,7 @@ function App() {
                                 >
                                     <Breadcrumbs
                                         className={classes.breadcrumbs}
-                                        mapObj={routeMenuItemMap}
+                                        mapObj={{ ...routeMenuItemMap }}
                                     />
                                 </Grid>
                             </Grid>
@@ -120,4 +136,4 @@ function App() {
     );
 }
 
-export default App;
+export default Layout;
