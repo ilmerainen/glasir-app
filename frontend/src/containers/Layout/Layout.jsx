@@ -123,7 +123,7 @@ function Layout() {
                                 >
                                     <Breadcrumbs
                                         className={classes.breadcrumbs}
-                                        mapObj={{ ...routeMenuItemMap }}
+                                        routeItemMap={{ ...routeMenuItemMap }}
                                     />
                                 </Grid>
                             </Grid>

@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function BreadcrumbsComponent({ mapObj, maxItems = 2 }) {
+function BreadcrumbsComponent({ routeItemMap, maxItems = 2 }) {
     const classes = useStyles();
     const location = useLocation();
 
@@ -43,7 +43,7 @@ function BreadcrumbsComponent({ mapObj, maxItems = 2 }) {
                         }
 
                         const formatedUrlPart = `${prev[i - 1].urlPart}/${urlPart}`;
-                        const name = mapObj[formatedUrlPart];
+                        const name = routeItemMap[formatedUrlPart];
 
                         return [...prev, { name, urlPart: formatedUrlPart }];
                     }, [])
@@ -75,7 +75,7 @@ BreadcrumbsComponent.defaultProps = {
 };
 
 BreadcrumbsComponent.propTypes = {
-    mapObj: PropTypes.object.isRequired,
+    routeItemMap: PropTypes.object.isRequired,
     maxItems: PropTypes.number,
 };
 
