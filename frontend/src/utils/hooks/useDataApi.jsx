@@ -1,43 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
+
 import { AVAILABLE_METHODS } from '../../constants/constants';
 
+const FETCH_INIT = 'FETCH_INIT';
+const FETCH_SUCCESS = 'FETCH_SUCCESS';
+const FETCH_FAILURE = 'FETCH_FAILURE';
 const { REACT_APP_API_HOST } = process.env;
+axios.defaults.baseURL = REACT_APP_API_HOST;
 
-export default function useDataApi({
-    url,
-    initData,
-    reqMethod = 'GET',
-    reqData = null,
-}) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [data, setData] = useState(initData);
-    const method = reqMethod.toUpperCase();
+const initialState = {
+    data: {},
+    isLoading: false,
+    isError: false,
+};
 
-    if (method && !AVAILABLE_METHODS.includes(method)) {
-        return new Error(`Method '${method}' is not available`);
+const dataFetchReducer = (state, action) => {
+    switch (action.type) {
+        case FETCH_INIT:
+            return { ...state.data, isLoading: true };
+        case FETCH_SUCCESS:
+            return {
+                data: {
+                    hits: action.payload,
+                },
+                isLoading: false,
+            };
+        case FETCH_FAILURE:
+            return {
+                errorMsg: action.payload,
+                isLoading: false,
+                isError: true,
+            };
+        default:
+            throw new Error('Action is not found');
     }
+};
 
-    const instance = axios.create({
-        baseURL: REACT_APP_API_HOST,
-    });
+export default function useDataApi(initConfig) {
+    const [config, setConfig] = useState(initConfig);
+    const [state, dispatch] = useReducer(dataFetchReducer, initialState);
+
+    if (config.method && !AVAILABLE_METHODS.includes(config.method)) {
+        return new Error(`Method '${config.method}' is not available`);
+    }
 
     useEffect(() => {
         let ignore = false;
 
-        async function fetchData() {
-            let result;
+        const fetchData = async () => {
+            dispatch({ type: FETCH_INIT });
 
             try {
-                result = await instance({
-                    method,
-                    url,
-                    reqData,
-                });
+                const result = await axios(config);
+
+                if (!ignore) {
+                    dispatch({ type: FETCH_SUCCESS, payload: result.data });
+                }
             } catch (e) {
-                setError(e.message);
-                setIsLoading(false);
+                dispatch({ type: FETCH_FAILURE, payload: e.message });
             }
 
             await new Promise(resolve => {
@@ -46,19 +67,14 @@ export default function useDataApi({
                     resolve();
                 }, 300);
             });
-
-            if (!ignore && !error) {
-                setData(result.data);
-                setIsLoading(false);
-            }
-        }
+        };
 
         fetchData();
 
         return function cleanup() {
             ignore = true;
         };
-    }, [url, method, reqData]);
+    }, [config]);
 
-    return [data, isLoading, error];
+    return [state, setConfig];
 }

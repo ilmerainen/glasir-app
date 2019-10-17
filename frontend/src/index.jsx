@@ -1,64 +1,59 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import * as serviceWorker from './serviceWorker';
 import '@material-ui/core/CssBaseline';
-import './assets/css/index.css';
-import Layout from './containers/Layout/Layout';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+import * as serviceWorker from 'src/serviceWorker.js';
+import 'assets/css/index.css';
+import Layout from 'containers/Layout/Layout';
+import { RouteNameContext } from 'src/context.js';
+import useDataApi from 'hooks/useDataApi';
+import { ROUTE_NAME_MAP } from 'constants/routeNameMap';
+import { CATEGORIES_ROUTE } from 'constants/routes';
 
 function App() {
+    const [categoriesData, doFetch] = useDataApi({
+        url: `${CATEGORIES_ROUTE}`,
+    });
+
+    const categories = categoriesData.data ? categoriesData.data.hits : null;
+    let routes = [];
+    let routeNameMap;
+
+    if (categories) {
+        const formated = categories.reduce((prev, { id, name }) => {
+            return {
+                ...prev,
+                [`${CATEGORIES_ROUTE}/${id}`]: name,
+            };
+        }, {});
+
+        routeNameMap = {
+            ...ROUTE_NAME_MAP,
+            ...formated,
+        };
+
+        routes = routes.concat(Object.keys(routeNameMap));
+        routes = routes.map(route => {
+            const regex = /.\/$/;
+            const exact = regex.test(route) ? true : null;
+            const routeComponent = (
+                <Route exact path={route} key={route}>
+                    <Layout />
+                </Route>
+            );
+
+            return routeComponent;
+        });
+    }
+
     return (
         <>
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/">
-                        <Layout />
-                    </Route>
-                    <Route path="/blog">
-                        <Layout />
-                    </Route>
-                    <Route path="/contacts">
-                        <Layout />
-                    </Route>
-                    <Route exact path="/categories">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/computer_science">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/databases_big_data">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/graphics_design">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/hardware_diy">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/internet_social_media">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/networking_cloud_computing">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/operating_systems">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/programming">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/programming_languages">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/security_encryption">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/security_encryption">
-                        <Layout />
-                    </Route>
-                    <Route path="/categories/web_development_design">
-                        <Layout />
-                    </Route>
+                    <RouteNameContext.Provider value={routeNameMap}>
+                        {routes}
+                    </RouteNameContext.Provider>
                 </Switch>
             </BrowserRouter>
         </>
