@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { RouteNameContext } from 'src/context.js';
+import { RouteNameContext } from 'src/context';
 
 function ListItemLink({ to, ...other }) {
     const routeItemName = useContext(RouteNameContext);
@@ -19,12 +19,8 @@ function ListItemLink({ to, ...other }) {
     );
 }
 
-ListItemLink.defautlProps = {
-    open: false,
-};
-
 ListItemLink.propTypes = {
     to: PropTypes.string.isRequired,
 };
 
-export default ListItemLink;
+export default memo(ListItemLink);

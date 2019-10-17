@@ -14,6 +14,10 @@ class Product extends Model
     public function category() {
         return $this->belongsTo('App\Category');
     }
+
+    public function files() {
+        return $this->belongsToMany('App\File')->using('App\FileProduct');
+    }
     
     public $timestamps = false;
 }

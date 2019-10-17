@@ -1,7 +1,7 @@
 import { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
 
-import { AVAILABLE_METHODS } from '../../constants/constants';
+import { AVAILABLE_METHODS } from 'constants/constants';
 
 const FETCH_INIT = 'FETCH_INIT';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
@@ -18,7 +18,12 @@ const initialState = {
 const dataFetchReducer = (state, action) => {
     switch (action.type) {
         case FETCH_INIT:
-            return { ...state.data, isLoading: true };
+            return {
+                data: {
+                    ...state.data,
+                },
+                isLoading: true,
+            };
         case FETCH_SUCCESS:
             return {
                 data: {
@@ -40,7 +45,6 @@ const dataFetchReducer = (state, action) => {
 export default function useDataApi(initConfig) {
     const [config, setConfig] = useState(initConfig);
     const [state, dispatch] = useReducer(dataFetchReducer, initialState);
-
     if (config.method && !AVAILABLE_METHODS.includes(config.method)) {
         return new Error(`Method '${config.method}' is not available`);
     }
@@ -60,13 +64,6 @@ export default function useDataApi(initConfig) {
             } catch (e) {
                 dispatch({ type: FETCH_FAILURE, payload: e.message });
             }
-
-            await new Promise(resolve => {
-                // for test loading animation
-                setTimeout(() => {
-                    resolve();
-                }, 300);
-            });
         };
 
         fetchData();
@@ -74,7 +71,7 @@ export default function useDataApi(initConfig) {
         return function cleanup() {
             ignore = true;
         };
-    }, [config]);
+    }, [config.url, config.method, config.data]);
 
     return [state, setConfig];
 }

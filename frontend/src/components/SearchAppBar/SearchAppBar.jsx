@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +11,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 
-import useStyles from './styles.js';
+import useStyles from './styles';
 
 function SearchAppBar() {
     const classes = useStyles();
@@ -80,4 +80,4 @@ function SearchAppBar() {
     );
 }
 
-export default SearchAppBar;
+export default memo(SearchAppBar);

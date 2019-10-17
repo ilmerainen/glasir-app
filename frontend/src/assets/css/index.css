@@ -1,8 +1,11 @@
 html {
-    height: 100vh;
 }
 
 body,
 #root {
     height: inherit;
+}
+
+img {
+    width: 100%;
 }

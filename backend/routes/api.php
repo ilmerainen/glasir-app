@@ -14,5 +14,12 @@ use Illuminate\Http\Request;
 */
 // categories 
 Route::middleware(['api'])->group(function () {
-    Route::get('/categories', 'GetCategories');    
+    Route::prefix('categories')->group(function() {
+        Route::get('/{id}', 'CategoryController@category');
+        Route::get('/', 'CategoryController@all');    
+    });
+    
+    Route::prefix('products')->group(function () {
+        Route::get('top/{count?}', 'ProductController@top');
+    });
 });

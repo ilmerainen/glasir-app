@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo, useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { useLocation } from 'react-router';
@@ -8,11 +8,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { RouteNameContext } from 'src/context.js';
-import useStyles from './styles.js';
+import { RouteNameContext } from 'src/context';
+import useStyles from './styles';
 
-function getCrumbsByPath(path, routeItemNameMap) {
-    return path
+function Crumbs(path, routeItemNameMap) {
+    const crumbs = path
         .split('/')
         .reduce((prev, urlPart, i, arr) => {
             if (!prev.length) {
@@ -47,15 +47,17 @@ function getCrumbsByPath(path, routeItemNameMap) {
                 </Link>
             );
         });
+
+    return crumbs;
 }
 
-function BreadcrumbsComponent({ maxItems = 2 }) {
+function BreadcrumbsComponent({ maxItems }) {
     const classes = useStyles();
     const routeItemNameMap = useContext(RouteNameContext);
     const location = useLocation();
     const currentPath = location.pathname;
     const memoizedCrumbs = useMemo(
-        () => getCrumbsByPath(currentPath, routeItemNameMap),
+        () => Crumbs(currentPath, routeItemNameMap),
         [currentPath]
     );
 
@@ -80,4 +82,4 @@ BreadcrumbsComponent.propTypes = {
     maxItems: PropTypes.number,
 };
 
-export default BreadcrumbsComponent;
+export default memo(BreadcrumbsComponent);
