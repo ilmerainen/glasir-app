@@ -19,10 +19,6 @@ function ListItemLink({ to, ...other }) {
     );
 }
 
-ListItemLink.defautlProps = {
-    open: false,
-};
-
 ListItemLink.propTypes = {
     to: PropTypes.string.isRequired,
 };

@@ -49,7 +49,7 @@ function getCrumbsByPath(path, routeItemNameMap) {
         });
 }
 
-function BreadcrumbsComponent({ maxItems = 2 }) {
+function BreadcrumbsComponent({ maxItems }) {
     const classes = useStyles();
     const routeItemNameMap = useContext(RouteNameContext);
     const location = useLocation();
