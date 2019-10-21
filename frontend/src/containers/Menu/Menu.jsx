@@ -18,7 +18,6 @@ import useStyles from './styles.js';
 function Menu() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const ExpandIcon = open ? <ExpandLess /> : <ExpandMore />;
     const RouteItemName = useContext(RouteNameContext);
     const categories = Object.keys(RouteItemName).filter(route => {
         return beginWithUrl('/categories/', route);
@@ -52,7 +51,7 @@ function Menu() {
                 <Divider />
                 <ListItem button open={open} onClick={handleClick}>
                     <ListItemText primary="Categories" />
-                    {ExpandIcon}
+                    {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse component="li" in={open} timeout="auto" unmountOnExit>
                     <List disablePadding>
