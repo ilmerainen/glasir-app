@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -27,4 +27,4 @@ ListItemLink.propTypes = {
     to: PropTypes.string.isRequired,
 };
 
-export default ListItemLink;
+export default memo(ListItemLink);

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
 
-export default function Logo() {
+function Logo() {
     return (
         <SvgIcon aria-label="logo-icon" viewBox="0 0 64 64" fontSize="large">
             <path d="m23 32h14v2h-14z" />
@@ -13,3 +13,5 @@ export default function Logo() {
         </SvgIcon>
     );
 }
+
+export default memo(Logo);

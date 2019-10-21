@@ -1,7 +1,7 @@
 import { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
 
-import { AVAILABLE_METHODS } from '../../constants/constants';
+import { AVAILABLE_METHODS } from 'constants/constants';
 
 const FETCH_INIT = 'FETCH_INIT';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';

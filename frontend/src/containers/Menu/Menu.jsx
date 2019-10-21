@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, memo } from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Collapse from '@material-ui/core/Collapse';
@@ -12,6 +12,7 @@ import Divider from '@material-ui/core/Divider';
 import Logo from 'components/Logo/Logo';
 import ListItemLink from 'components/ListItemLink/ListItemLink';
 import { RouteNameContext } from 'src/context.js';
+import beginWithUrl from 'utils/misc/beginWithUrl';
 import useStyles from './styles.js';
 
 function Menu() {
@@ -20,8 +21,7 @@ function Menu() {
     const ExpandIcon = open ? <ExpandLess /> : <ExpandMore />;
     const RouteItemName = useContext(RouteNameContext);
     const categories = Object.keys(RouteItemName).filter(route => {
-        const regex = /^\/categories\//;
-        return regex.test(route);
+        return beginWithUrl('/categories/', route);
     });
 
     const handleCollapse = () => {
@@ -74,4 +74,4 @@ function Menu() {
     );
 }
 
-export default Menu;
+export default memo(Menu);

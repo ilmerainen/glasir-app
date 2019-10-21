@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo, useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { useLocation } from 'react-router';
@@ -80,4 +80,4 @@ BreadcrumbsComponent.propTypes = {
     maxItems: PropTypes.number,
 };
 
-export default BreadcrumbsComponent;
+export default memo(BreadcrumbsComponent);

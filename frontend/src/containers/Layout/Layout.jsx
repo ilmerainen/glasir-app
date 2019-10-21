@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider as ThemeProvider } from '@material-ui/core/styles';
@@ -36,4 +36,4 @@ function Layout() {
     );
 }
 
-export default Layout;
+export default memo(Layout);
