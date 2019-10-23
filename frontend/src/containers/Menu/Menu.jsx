@@ -1,4 +1,4 @@
-import React, { useContext, memo } from 'react';
+import React, { useContext, useMemo, memo } from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Collapse from '@material-ui/core/Collapse';
@@ -11,17 +11,31 @@ import Divider from '@material-ui/core/Divider';
 
 import Logo from 'components/Logo/Logo';
 import ListItemLink from 'components/ListItemLink/ListItemLink';
-import { RouteNameContext } from 'src/context.js';
+import RouteNameContext from 'context/routeNameContext';
 import beginWithUrl from 'utils/misc/beginWithUrl';
-import useStyles from './styles.js';
+import useStyles from './styles';
 
 function Menu() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const RouteItemName = useContext(RouteNameContext);
-    const categories = Object.keys(RouteItemName).filter(route => {
-        return beginWithUrl('/categories/', route);
-    });
+    const RouteItemName = useContext(RouteNameContext).routes;
+    const categories = useMemo(
+        () =>
+            Object.keys(RouteItemName)
+                .filter(route => {
+                    return beginWithUrl('/categories/', route);
+                })
+                .map(route => {
+                    return (
+                        <ListItemLink
+                            className={classes.nested}
+                            key={route}
+                            to={`${route}`}
+                        />
+                    );
+                }),
+        [RouteItemName]
+    );
 
     const handleCollapse = () => {
         setOpen(false);
@@ -49,22 +63,12 @@ function Menu() {
                     </Typography>
                 </div>
                 <Divider />
-                <ListItem button open={open} onClick={handleClick}>
+                <ListItem button onClick={handleClick}>
                     <ListItemText primary="Categories" />
                     {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse component="li" in={open} timeout="auto" unmountOnExit>
-                    <List disablePadding>
-                        {categories.map(name => {
-                            return (
-                                <ListItemLink
-                                    className={classes.nested}
-                                    key={name}
-                                    to={`${name}`}
-                                />
-                            );
-                        })}
-                    </List>
+                    <List disablePadding>{categories}</List>
                 </Collapse>
                 <ListItemLink to="/blog" onClick={handleCollapse} />
                 <ListItemLink to="/contacts" onClick={handleCollapse} />

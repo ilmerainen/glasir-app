@@ -1,16 +1,15 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import axios from 'axios';
-
-import { AVAILABLE_METHODS } from 'constants/constants';
 
 const FETCH_INIT = 'FETCH_INIT';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
 const FETCH_FAILURE = 'FETCH_FAILURE';
 const { REACT_APP_API_HOST } = process.env;
 axios.defaults.baseURL = REACT_APP_API_HOST;
+const AVAILABLE_METHODS = ['GET', 'DELETE', 'HEAD', 'PUT', 'PATCH'];
 
 const initialState = {
-    data: {},
+    rawData: null,
     isLoading: false,
     isError: false,
 };
@@ -18,12 +17,13 @@ const initialState = {
 const dataFetchReducer = (state, action) => {
     switch (action.type) {
         case FETCH_INIT:
-            return { ...state.data, isLoading: true };
+            return {
+                rawData: null,
+                isLoading: true,
+            };
         case FETCH_SUCCESS:
             return {
-                data: {
-                    hits: action.payload,
-                },
+                rawData: action.payload,
                 isLoading: false,
             };
         case FETCH_FAILURE:
@@ -37,8 +37,7 @@ const dataFetchReducer = (state, action) => {
     }
 };
 
-export default function useDataApi(initConfig) {
-    const [config, setConfig] = useState(initConfig);
+export default function useDataApi(config) {
     const [state, dispatch] = useReducer(dataFetchReducer, initialState);
 
     if (config.method && !AVAILABLE_METHODS.includes(config.method)) {
@@ -60,13 +59,6 @@ export default function useDataApi(initConfig) {
             } catch (e) {
                 dispatch({ type: FETCH_FAILURE, payload: e.message });
             }
-
-            await new Promise(resolve => {
-                // for test loading animation
-                setTimeout(() => {
-                    resolve();
-                }, 300);
-            });
         };
 
         fetchData();
@@ -74,7 +66,7 @@ export default function useDataApi(initConfig) {
         return function cleanup() {
             ignore = true;
         };
-    }, [config]);
+    }, [config.url, config.method, config.data]);
 
-    return [state, setConfig];
+    return state;
 }

@@ -6,8 +6,11 @@ const useStyles = makeStyles(theme => ({
         paddingTop: 0,
     },
     lists: {
+        position: 'fixed',
         overflow: 'auto',
         height: 'inherit',
+        width: 'inherit',
+        minHeight: '100vh',
         backgroundColor: theme.palette.background.paper,
     },
     nested: {

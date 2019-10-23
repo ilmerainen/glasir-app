@@ -11,11 +11,14 @@ const useStyles = makeStyles(theme => ({
         height: '100%',
         width: '100%',
     },
-    content: {
+    mainSection: {
         width: 'calc(100% - 280px)',
     },
+    block: {
+        marginTop: theme.spacing(2),
+    },
     menu: {
-        height: '100vh',
+        height: '100%',
         width: '280px',
     },
     breadcrumbs: {},

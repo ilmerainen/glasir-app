@@ -11,7 +11,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 
-import useStyles from './styles.js';
+import useStyles from './styles';
 
 function SearchAppBar() {
     const classes = useStyles();
