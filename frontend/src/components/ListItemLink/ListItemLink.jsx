@@ -2,17 +2,17 @@ import React, { useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { RouteNameContext } from 'src/context.js';
+import RouteNameContext from 'context/routeNameContext';
 
 function ListItemLink({ to, ...other }) {
-    const routeItemName = useContext(RouteNameContext);
+    const routeItemName = useContext(RouteNameContext).routes;
     const primary = routeItemName[to];
 
     return (
         <li>
-            <ListItem button component={RouterLink} to={to} {...other}>
+            <ListItem button component={Link} to={to} {...other}>
                 <ListItemText primary={primary} />
             </ListItem>
         </li>

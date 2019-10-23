@@ -12,7 +12,15 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// categories 
+
 Route::middleware(['api'])->group(function () {
-    Route::get('/categories', 'GetCategories');    
+    Route::prefix('categories')->group(function() {
+        Route::get('/{id}/products', 'CategoryController@products');
+        Route::get('/', 'CategoryController@index');    
+    });
+    
+    Route::prefix('products')->group(function () {
+        Route::get('top/{count?}', 'ProductController@top');
+        Route::get('/{id}', 'ProductController@show');
+    });
 });

@@ -1,37 +1,86 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider as ThemeProvider } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import RouteNameContext from 'context/routeNameContext';
+import routes from 'constants/routes';
+import useDataApi from 'hooks/useDataApi';
+import SearchAppBar from 'components/SearchAppBar/SearchAppBar';
+import ProductContainer from 'containers/ProductContainer/ProductContainer';
+import Menu from 'containers/Menu/Menu';
+import ProductList from 'containers/ProductList/ProductList';
+import customizedTheme from './theme';
+import useStyles from './styles';
 import 'assets/css/App.css';
 import 'assets/css/index.css';
-import Breadcrumbs from 'components/Breadcrumbs/Breadcrumbs';
-import SearchAppBar from 'components/SearchAppBar/SearchAppBar';
-import Menu from 'containers/Menu/Menu';
-import useStyles from './styles.js';
-import customizedTheme from './theme';
+
+const { CATEGORIES_ROUTE, PRODUCTS_ROUTE, PRODUCTS_BY_CATEGORY_ROUTE } = routes;
 
 function Layout() {
     const classes = useStyles();
+    const routeNameContext = useContext(RouteNameContext);
+    const { isLoading, rawData } = useDataApi({
+        url: `${CATEGORIES_ROUTE}`,
+    });
+
+    if (!isLoading && rawData) {
+        const formated = rawData.reduce((prev, { id, name }) => {
+            return {
+                ...prev,
+                [`${CATEGORIES_ROUTE}/${id}/products`]: name,
+            };
+        }, {});
+
+        routeNameContext.addRoutes(formated);
+    }
 
     return (
         <ThemeProvider theme={customizedTheme}>
-            <Grid container className={classes.app}>
-                <Grid container direction="row">
-                    <Grid item className={classes.menu}>
-                        <Menu />
-                    </Grid>
-                    <Grid item className={classes.content}>
-                        <Grid item>
-                            <SearchAppBar />
+            <BrowserRouter>
+                {rawData && (
+                    <Grid container className={classes.app}>
+                        <Grid container direction="row">
+                            <Grid item className={classes.menu}>
+                                <Menu />
+                            </Grid>
+                            <Grid item className={classes.mainSection}>
+                                <Grid item>
+                                    <SearchAppBar />
+                                </Grid>
+                                <Container
+                                    maxWidth="lg"
+                                    className={classes.ProductContainer}
+                                >
+                                    <Grid
+                                        container
+                                        className={`${classes.breadcrumbs} ${classes.block}`}
+                                    ></Grid>
+                                    <Grid item className={classes.block}>
+                                        <Switch>
+                                            <Route
+                                                exact
+                                                path={`${PRODUCTS_ROUTE}/:id`}
+                                            >
+                                                <ProductContainer />
+                                            </Route>
+                                            <Route
+                                                exact
+                                                path={`${PRODUCTS_BY_CATEGORY_ROUTE}`}
+                                            >
+                                                <ProductList />
+                                            </Route>
+                                        </Switch>
+                                    </Grid>
+                                </Container>
+                            </Grid>
                         </Grid>
-                        <Grid container item className={classes.breadcrumbs}>
-                            <Breadcrumbs className={classes.breadcrumbs} />
-                        </Grid>
+                        <CssBaseline />
                     </Grid>
-                </Grid>
-                <CssBaseline />
-            </Grid>
+                )}
+            </BrowserRouter>
         </ThemeProvider>
     );
 }
