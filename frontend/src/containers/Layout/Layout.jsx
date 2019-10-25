@@ -1,4 +1,4 @@
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider as ThemeProvider } from '@material-ui/core/styles';
@@ -12,6 +12,8 @@ import SearchAppBar from 'components/SearchAppBar/SearchAppBar';
 import ProductContainer from 'containers/ProductContainer/ProductContainer';
 import Menu from 'containers/Menu/Menu';
 import ProductList from 'containers/ProductList/ProductList';
+import BagModal from 'containers/BagModal/BagModal';
+import BagContext from 'context/bagContext';
 import customizedTheme from './theme';
 import useStyles from './styles';
 import 'assets/css/App.css';
@@ -22,6 +24,8 @@ const { CATEGORIES_ROUTE, PRODUCTS_ROUTE, PRODUCTS_BY_CATEGORY_ROUTE } = routes;
 function Layout() {
     const classes = useStyles();
     const routeNameContext = useContext(RouteNameContext);
+    const { bag, setBag } = useContext(BagContext);
+    const [openBag, setOpenBag] = useState(false);
     const { isLoading, rawData } = useDataApi({
         url: `${CATEGORIES_ROUTE}`,
     });
@@ -37,6 +41,39 @@ function Layout() {
         routeNameContext.addRoutes(formated);
     }
 
+    const handleOpenBag = () => {
+        setOpenBag(true);
+    };
+
+    const handleCloseBag = () => {
+        setOpenBag(false);
+    };
+
+    const handleCancelItem = name => {
+        setBag(prevBag => {
+            const currentBag = { ...prevBag };
+
+            delete currentBag[name];
+
+            return currentBag;
+        });
+    };
+
+    const setProductCount = name => ({ target }) => {
+        const count = target.value > 1 ? target.value : 1;
+
+        setBag(value => {
+            const data = {
+                ...value,
+                [name]: {
+                    ...value[name],
+                    count,
+                },
+            };
+            return data;
+        });
+    };
+
     return (
         <ThemeProvider theme={customizedTheme}>
             <BrowserRouter>
@@ -48,7 +85,9 @@ function Layout() {
                             </Grid>
                             <Grid item className={classes.mainSection}>
                                 <Grid item>
-                                    <SearchAppBar />
+                                    <SearchAppBar
+                                        handleOpenBag={handleOpenBag}
+                                    />
                                 </Grid>
                                 <Container
                                     maxWidth="lg"
@@ -64,7 +103,11 @@ function Layout() {
                                                 exact
                                                 path={`${PRODUCTS_ROUTE}/:id`}
                                             >
-                                                <ProductContainer />
+                                                <ProductContainer
+                                                    handleOpenBag={
+                                                        handleOpenBag
+                                                    }
+                                                />
                                             </Route>
                                             <Route
                                                 exact
@@ -80,6 +123,13 @@ function Layout() {
                         <CssBaseline />
                     </Grid>
                 )}
+                <BagModal
+                    bag={bag}
+                    open={openBag}
+                    onClose={handleCloseBag}
+                    setProductCount={setProductCount}
+                    handleCancelItem={handleCancelItem}
+                />
             </BrowserRouter>
         </ThemeProvider>
     );

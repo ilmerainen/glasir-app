@@ -1,4 +1,5 @@
 import { makeStyles, fade } from '@material-ui/core/styles';
+import indigo from '@material-ui/core/colors/indigo';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -56,6 +57,11 @@ const useStyles = makeStyles(theme => ({
         marginRight: '15px',
         '&:last-child': {
             margin: 0,
+        },
+    },
+    basketBadge: {
+        '& span': {
+            background: indigo.A400,
         },
     },
 }));
