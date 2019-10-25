@@ -1,8 +1,12 @@
-import React, { memo, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { memo, useContext, useState } from 'react';
+import { useLocation, Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import clsx from 'clsx';
 import { Typography, Box } from '@material-ui/core';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import RouteNameContext from 'context/routeNameContext';
 import constants from 'constants/misc.js';
@@ -13,19 +17,22 @@ import useDataApi from 'hooks/useDataApi';
 import useStyles from './styles';
 
 const { PRODUCTS_PER_PAGE } = constants;
+const itemsCountMap = [{ title: 4, value: 4 }, { title: 8, value: 8 }];
 
 function ProductList() {
     const classes = useStyles();
     const { pathname, search } = useLocation();
     const routeItemNameMap = useContext(RouteNameContext).routes;
-    const paramsString = getUrlParamsFromObj({
-        per_page: PRODUCTS_PER_PAGE,
-    });
     const name = routeItemNameMap[pathname];
+    const [itemCount, setItemCount] = useState(PRODUCTS_PER_PAGE);
+    const paramsString = getUrlParamsFromObj({
+        per_page: itemCount,
+    });
     const pageParam = search || '?page=1';
     let products;
     let currentPage;
     let lastPage;
+    let redirectLink;
 
     const appendedUrl = `${pathname}${pageParam}&${paramsString}`;
     const { isLoading, rawData } = useDataApi({
@@ -33,25 +40,56 @@ function ProductList() {
     });
 
     if (!isLoading && rawData) {
-        currentPage = rawData.current_page;
-        lastPage = rawData.last_page;
-        products = rawData.data.map(product => {
-            return <ProductCard key={product.id} {...product} />;
-        });
+        if (!rawData.data.length) {
+            const route = `${pathname}?page=1`;
+
+            redirectLink = <Redirect to={`${route}`} />;
+        } else {
+            currentPage = rawData.current_page;
+            lastPage = rawData.last_page;
+            products = rawData.data.map(product => {
+                return <ProductCard key={product.id} {...product} />;
+            });
+        }
     }
+
+    const handleChangeItemCount = ({ target }) => {
+        setItemCount(target.value);
+    };
 
     return (
         <>
+            {redirectLink}
             {products && (
                 <>
                     <Grid
                         container
                         className={clsx(classes.pageTitle, classes.block)}
+                        alignItems="center"
                     >
-                        <Grid item>
+                        <Grid container className={classes.block}>
                             <Typography variant="h4">
                                 <Box fontWeight="fontWeightBold">{name}</Box>
                             </Typography>
+                        </Grid>
+                        <Grid container>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel htmlFor="items-per-page">
+                                    Items
+                                </InputLabel>
+                                <Select
+                                    value={itemCount}
+                                    onChange={handleChangeItemCount}
+                                >
+                                    {itemsCountMap.map(({ title, value }) => {
+                                        return (
+                                            <MenuItem value={value}>
+                                                {title}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
                         </Grid>
                     </Grid>
                     <Grid

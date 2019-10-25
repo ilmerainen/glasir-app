@@ -13,7 +13,7 @@ function ProductCard({ id, name, price, img }) {
     return (
         <Grid item md={3} className={classes.card}>
             <Grid item className={classes.imageBlock}>
-                <RouterLink to={route} className={classes.textLink}>
+                <RouterLink to={route}>
                     <img src={img} alt={name} className={classes.image} />
                 </RouterLink>
             </Grid>
