@@ -12,7 +12,7 @@ import useStyles from './styles';
 
 const { PRODUCTS_ROUTE } = routes;
 
-function ProductContainer({ handleOpenBag }) {
+function ProductContainer({ setOpenBag }) {
     const classes = useStyles();
     const productId = useParams().id;
     const url = `${PRODUCTS_ROUTE}/${productId}`;
@@ -35,7 +35,7 @@ function ProductContainer({ handleOpenBag }) {
         };
     }
 
-    const handleClickOpen = () => {
+    const handleButtonClick = () => {
         const { id, name, image, price } = product;
 
         if (!bag[name]) {
@@ -53,7 +53,7 @@ function ProductContainer({ handleOpenBag }) {
             setBag(value);
         }
 
-        handleOpenBag();
+        setOpenBag(true);
     };
 
     return (
@@ -89,7 +89,7 @@ function ProductContainer({ handleOpenBag }) {
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}
-                                    onClick={handleClickOpen}
+                                    onClick={handleButtonClick}
                                 >
                                     Buy
                                 </Button>
@@ -117,7 +117,7 @@ function ProductContainer({ handleOpenBag }) {
 }
 
 ProductContainer.propTypes = {
-    handleOpenBag: PropTypes.func.isRequired,
+    setOpenBag: PropTypes.func.isRequired,
 };
 
 export default memo(ProductContainer);

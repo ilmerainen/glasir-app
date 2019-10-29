@@ -10,16 +10,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import CancelIcon from '@material-ui/icons/Cancel';
-
 import { Typography } from '@material-ui/core';
+
 import useStyles from './styles';
 
 function BagModal({ bag, open, onClose, setProductCount, handleCancelItem }) {
     const classes = useStyles();
     const products = Object.entries(bag);
     const bagIsEmpty = !products.length;
-    const total = Object.values(bag).reduce((sum, product) => {
-        const { price, count } = product;
+    const total = Object.values(bag).reduce((sum, { price, count }) => {
         return price * count + sum;
     }, 0);
 
@@ -54,90 +53,84 @@ function BagModal({ bag, open, onClose, setProductCount, handleCancelItem }) {
                 {!bagIsEmpty && (
                     <Grid container>
                         {products.map(
-                            ([name, { image, price, count, url }]) => {
-                                return (
-                                    <Grid
-                                        key={name}
-                                        container
-                                        alignItems="center"
-                                        className={classes.product}
-                                    >
-                                        <Grid item xs={4}>
-                                            <Grid container alignItems="center">
-                                                <Grid item xs={2}>
-                                                    <IconButton
-                                                        className={
-                                                            classes.cancelButton
-                                                        }
-                                                        onClick={() =>
-                                                            handleCancelItem(
-                                                                name
-                                                            )
-                                                        }
-                                                    >
-                                                        <CancelIcon />
-                                                    </IconButton>
-                                                </Grid>
-                                                <Grid
-                                                    item
-                                                    xs={10}
+                            ([name, { image, price, count, url }]) => (
+                                <Grid
+                                    key={name}
+                                    container
+                                    alignItems="center"
+                                    className={classes.product}
+                                >
+                                    <Grid item xs={4}>
+                                        <Grid container alignItems="center">
+                                            <Grid item xs={2}>
+                                                <IconButton
                                                     className={
-                                                        classes.imageBlock
+                                                        classes.cancelButton
                                                     }
+                                                    onClick={handleCancelItem(
+                                                        name
+                                                    )}
                                                 >
-                                                    <Link
-                                                        to={url}
-                                                        onClick={onClose}
-                                                    >
-                                                        <img
-                                                            src={image}
-                                                            alt={name}
-                                                            className={
-                                                                classes.productImage
-                                                            }
-                                                        />
-                                                    </Link>
-                                                </Grid>
+                                                    <CancelIcon />
+                                                </IconButton>
                                             </Grid>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Grid container justify="center">
+                                            <Grid
+                                                item
+                                                xs={10}
+                                                className={classes.imageBlock}
+                                            >
                                                 <Link
                                                     to={url}
                                                     onClick={onClose}
-                                                    className={classes.textLink}
                                                 >
-                                                    <Typography variant="subtitle1">
-                                                        {name}
-                                                    </Typography>
+                                                    <img
+                                                        src={image}
+                                                        alt={name}
+                                                        className={
+                                                            classes.productImage
+                                                        }
+                                                    />
                                                 </Link>
                                             </Grid>
                                         </Grid>
-                                        <Grid item xs={3}>
-                                            <TextField
-                                                id="outlined-number"
-                                                label="Count"
-                                                value={count}
-                                                onChange={setProductCount(name)}
-                                                type="number"
-                                                className={classes.textField}
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Grid container justify="center">
-                                                <Typography variant="h6">
-                                                    {`${price} $`}
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Grid container justify="center">
+                                            <Link
+                                                to={url}
+                                                onClick={onClose}
+                                                className={classes.textLink}
+                                            >
+                                                <Typography variant="subtitle1">
+                                                    {name}
                                                 </Typography>
-                                            </Grid>
+                                            </Link>
                                         </Grid>
                                     </Grid>
-                                );
-                            }
+                                    <Grid item xs={3}>
+                                        <TextField
+                                            id="outlined-number"
+                                            label="Count"
+                                            value={count}
+                                            onChange={setProductCount(name)}
+                                            type="number"
+                                            className={classes.textField}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <Grid container justify="center">
+                                            <Typography variant="h6">
+                                                {`${price} $`}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            )
                         )}
                     </Grid>
                 )}
@@ -152,12 +145,11 @@ function BagModal({ bag, open, onClose, setProductCount, handleCancelItem }) {
                         <Grid item xs={3}>
                             <Grid container justify="center">
                                 <Typography variant="h5">
-                                    Total:{' '}
                                     <Box
                                         component="span"
                                         fontWeight="fontWeightBold"
                                     >
-                                        {total}$
+                                        {`Total: ${total}$`}
                                     </Box>
                                 </Typography>
                             </Grid>
@@ -200,10 +192,14 @@ function BagModal({ bag, open, onClose, setProductCount, handleCancelItem }) {
     );
 }
 
+BagModal.defaultProps = {
+    open: false,
+};
+
 BagModal.propTypes = {
     bag: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
+    open: PropTypes.bool,
     setProductCount: PropTypes.func.isRequired,
     handleCancelItem: PropTypes.func.isRequired,
 };

@@ -41,15 +41,7 @@ function Layout() {
         routeNameContext.addRoutes(formated);
     }
 
-    const handleOpenBag = () => {
-        setOpenBag(true);
-    };
-
-    const handleCloseBag = () => {
-        setOpenBag(false);
-    };
-
-    const handleCancelItem = name => {
+    const handleCancelItem = name => () => {
         setBag(prevBag => {
             const currentBag = { ...prevBag };
 
@@ -62,16 +54,17 @@ function Layout() {
     const setProductCount = name => ({ target }) => {
         const count = target.value > 1 ? target.value : 1;
 
-        setBag(value => {
-            const data = {
-                ...value,
-                [name]: {
-                    ...value[name],
-                    count,
-                },
-            };
-            return data;
-        });
+        setBag(value => ({
+            ...value,
+            [name]: {
+                ...value[name],
+                count,
+            },
+        }));
+    };
+
+    const handleCloseBag = () => {
+        setOpenBag(false);
     };
 
     return (
@@ -85,9 +78,7 @@ function Layout() {
                             </Grid>
                             <Grid item className={classes.mainSection}>
                                 <Grid item>
-                                    <SearchAppBar
-                                        handleOpenBag={handleOpenBag}
-                                    />
+                                    <SearchAppBar setOpenBag={setOpenBag} />
                                 </Grid>
                                 <Container
                                     maxWidth="lg"
@@ -104,9 +95,7 @@ function Layout() {
                                                 path={`${PRODUCTS_ROUTE}/:id`}
                                             >
                                                 <ProductContainer
-                                                    handleOpenBag={
-                                                        handleOpenBag
-                                                    }
+                                                    setOpenBag={setOpenBag}
                                                 />
                                             </Route>
                                             <Route

@@ -17,6 +17,7 @@ import useDataApi from 'hooks/useDataApi';
 import useStyles from './styles';
 
 const { PRODUCTS_PER_PAGE } = constants;
+const itemsCountMap = [{ title: 4, value: 4 }, { title: 8, value: 8 }];
 
 function ProductList() {
     const classes = useStyles();
@@ -80,8 +81,13 @@ function ProductList() {
                                     value={itemCount}
                                     onChange={handleChangeItemCount}
                                 >
-                                    <MenuItem value={4}>4</MenuItem>
-                                    <MenuItem value={8}>8</MenuItem>
+                                    {itemsCountMap.map(({ title, value }) => {
+                                        return (
+                                            <MenuItem value={value}>
+                                                {title}
+                                            </MenuItem>
+                                        );
+                                    })}
                                 </Select>
                             </FormControl>
                         </Grid>

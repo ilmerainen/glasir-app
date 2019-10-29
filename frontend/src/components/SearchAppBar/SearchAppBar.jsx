@@ -16,10 +16,14 @@ import Link from '@material-ui/core/Link';
 import BagContext from 'context/bagContext';
 import useStyles from './styles';
 
-function SearchAppBar({ handleOpenBag }) {
+function SearchAppBar({ setOpenBag }) {
     const classes = useStyles();
     const { bag } = useContext(BagContext);
     const productCount = Object.keys(bag).length || null;
+
+    const handleIconClick = () => {
+        setOpenBag(true);
+    };
 
     return (
         <>
@@ -76,7 +80,7 @@ function SearchAppBar({ handleOpenBag }) {
                         <Grid container justify="flex-end">
                             <IconButton
                                 className={classes.shoppingCartIcon}
-                                onClick={handleOpenBag}
+                                onClick={handleIconClick}
                             >
                                 <Badge
                                     badgeContent={productCount}
@@ -94,7 +98,7 @@ function SearchAppBar({ handleOpenBag }) {
 }
 
 SearchAppBar.propTypes = {
-    handleOpenBag: PropTypes.func.isRequired,
+    setOpenBag: PropTypes.func.isRequired,
 };
 
 export default memo(SearchAppBar);
