@@ -1,1 +1,1 @@
-export const AVAILABLE_METHODS = ['GET', 'DELETE', 'HEAD', 'PUT', 'PATCH'];
+export const AUTH_TOKEN = 'bearer_token';

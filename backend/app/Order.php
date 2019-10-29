@@ -15,6 +15,4 @@ class Order extends Model
     {
         return $this->belongsToMany('App\Product')->using('App\OrderProduct');
     }
-
-    public $timestamps = false;
 }

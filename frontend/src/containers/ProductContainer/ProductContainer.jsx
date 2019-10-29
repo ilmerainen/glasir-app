@@ -6,7 +6,7 @@ import useDataApi from 'hooks/useDataApi';
 import { Typography, Box } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
-import BagContext from 'context/bagContext';
+import AppContext from 'context/AppContext';
 import routes from 'constants/routes';
 import useStyles from './styles';
 
@@ -16,7 +16,7 @@ function ProductContainer({ handleOpenBag }) {
     const classes = useStyles();
     const productId = useParams().id;
     const url = `${PRODUCTS_ROUTE}/${productId}`;
-    const { bag, setBag } = useContext(BagContext);
+    const { bag, setBag } = useContext(AppContext);
     const { isLoading, rawData } = useDataApi({
         url,
     });

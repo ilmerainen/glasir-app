@@ -6,7 +6,7 @@ const FETCH_SUCCESS = 'FETCH_SUCCESS';
 const FETCH_FAILURE = 'FETCH_FAILURE';
 const { REACT_APP_API_HOST } = process.env;
 axios.defaults.baseURL = REACT_APP_API_HOST;
-const AVAILABLE_METHODS = ['GET', 'DELETE', 'HEAD', 'PUT', 'PATCH'];
+const AVAILABLE_METHODS = ['GET', 'POST', 'DELETE', 'HEAD', 'PUT', 'PATCH'];
 
 const initialState = {
     rawData: null,
@@ -39,8 +39,12 @@ const dataFetchReducer = (state, action) => {
 
 export default function useDataApi(config) {
     const [state, dispatch] = useReducer(dataFetchReducer, initialState);
+    const reqMethod = config.method || 'GET';
 
-    if (config.method && !AVAILABLE_METHODS.includes(config.method)) {
+    if (
+        !config.method &&
+        !AVAILABLE_METHODS.includes(reqMethod.toUpperCase())
+    ) {
         return new Error(`Method '${config.method}' is not available`);
     }
 
@@ -52,7 +56,6 @@ export default function useDataApi(config) {
 
             try {
                 const result = await axios(config);
-
                 if (!ignore) {
                     dispatch({ type: FETCH_SUCCESS, payload: result.data });
                 }

@@ -21,6 +21,7 @@ const { PRODUCTS_PER_PAGE } = constants;
 function ProductList() {
     const classes = useStyles();
     const { pathname, search } = useLocation();
+    console.log(pathname);
     const routeItemNameMap = useContext(RouteNameContext).routes;
     const name = routeItemNameMap[pathname];
     const [itemCount, setItemCount] = useState(PRODUCTS_PER_PAGE);

@@ -13,18 +13,30 @@ import ProductContainer from 'containers/ProductContainer/ProductContainer';
 import Menu from 'containers/Menu/Menu';
 import ProductList from 'containers/ProductList/ProductList';
 import BagModal from 'containers/BagModal/BagModal';
-import BagContext from 'context/bagContext';
+import AppContext from 'context/AppContext';
+import GoogleAuth from 'containers/GoogleAuth/GoogleAuth';
+import SignIn from 'containers/SignIn/SignIn';
+import Profile from 'containers/Profile/Profile';
+import Checkout from 'containers/Checkout/Checkout';
 import customizedTheme from './theme';
 import useStyles from './styles';
 import 'assets/css/App.css';
 import 'assets/css/index.css';
 
-const { CATEGORIES_ROUTE, PRODUCTS_ROUTE, PRODUCTS_BY_CATEGORY_ROUTE } = routes;
+const {
+    CATEGORIES_ROUTE,
+    PRODUCTS_ROUTE,
+    PRODUCTS_BY_CATEGORY_ROUTE,
+    SIGNIN_ROUTE,
+    SIGNUP_ROUTE,
+    PROFILE_ROUTE,
+    CHECKOUT_ROUTE,
+} = routes;
 
 function Layout() {
     const classes = useStyles();
     const routeNameContext = useContext(RouteNameContext);
-    const { bag, setBag } = useContext(BagContext);
+    const { bag, setBag } = useContext(AppContext);
     const [openBag, setOpenBag] = useState(false);
     const { isLoading, rawData } = useDataApi({
         url: `${CATEGORIES_ROUTE}`,
@@ -93,10 +105,6 @@ function Layout() {
                                     maxWidth="lg"
                                     className={classes.ProductContainer}
                                 >
-                                    <Grid
-                                        container
-                                        className={`${classes.breadcrumbs} ${classes.block}`}
-                                    ></Grid>
                                     <Grid item className={classes.block}>
                                         <Switch>
                                             <Route
@@ -111,9 +119,21 @@ function Layout() {
                                             </Route>
                                             <Route
                                                 exact
-                                                path={`${PRODUCTS_BY_CATEGORY_ROUTE}`}
+                                                path="/categories/:id/products"
                                             >
                                                 <ProductList />
+                                            </Route>
+                                            <Route exact path={SIGNUP_ROUTE}>
+                                                <GoogleAuth />
+                                            </Route>
+                                            <Route exact path={SIGNIN_ROUTE}>
+                                                <SignIn />
+                                            </Route>
+                                            <Route exact path={PROFILE_ROUTE}>
+                                                <Profile />
+                                            </Route>
+                                            <Route exact path={CHECKOUT_ROUTE}>
+                                                <Checkout />
                                             </Route>
                                         </Switch>
                                     </Grid>

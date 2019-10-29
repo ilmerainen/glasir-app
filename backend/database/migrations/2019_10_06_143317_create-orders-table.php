@@ -15,7 +15,7 @@ class CreateOrdersTable extends Migration
             $table->string('street', 100);
             $table->integer('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
     }
 

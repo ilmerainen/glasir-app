@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles';
-import red from '@material-ui/core/colors/red';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -17,14 +16,14 @@ const useStyles = makeStyles(theme => ({
     cancelButton: {
         color: theme.palette.grey[200],
         '&:hover': {
-            color: red[500],
+            color: theme.palette.secondary[500],
         },
     },
     totalText: {
         marginBottom: theme.spacing(3),
     },
     footer: {
-        padding: ` ${theme.spacing(2)}px ${theme.spacing(3)}px`,
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
     },
     textLink: {
         textDecoration: 'none',
